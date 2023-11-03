@@ -7,7 +7,12 @@ using UnityEngine;
 public class PlayerMovement : MonoBehaviour
 {
 
-    public float speed;
+    private float speed;
+
+    public float walkSpeed;
+    public float sprintSpeed;
+
+    public KeyCode sprintKey = KeyCode.LeftShift;
 
     public Transform orientation;
 
@@ -24,6 +29,15 @@ public class PlayerMovement : MonoBehaviour
     public LayerMask groundMask;
     bool grounded;
 
+
+    public MovementState state;
+
+    public enum MovementState{
+
+        walking,
+        sprinting
+    }
+
     private void Start(){
 
         rb = GetComponent<Rigidbody>();
@@ -37,6 +51,7 @@ public class PlayerMovement : MonoBehaviour
 
         GetInput();
         SpeedLimit();
+        StateHandler();
 
         //if(grounded){
         //    Debug.Log("grounded");
@@ -57,6 +72,20 @@ public class PlayerMovement : MonoBehaviour
 
         horizontalInput = Input.GetAxisRaw("Horizontal");
         verticalInput = Input.GetAxisRaw("Vertical");
+    }
+
+    private void StateHandler(){
+
+        if(Input.GetKey(sprintKey)){
+
+            state = MovementState.sprinting;
+            speed = sprintSpeed;
+
+        }else{
+
+            state = MovementState.walking;
+            speed = walkSpeed;
+        }
     }
 
     private void MovePlayer(){
